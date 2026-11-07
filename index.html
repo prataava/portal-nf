@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal NF — SIP Bimbel Nurul Fikri</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f4f1ee; color: #2b2320;
+  }
+  body { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+
+  header.bilah {
+    flex: 0 0 auto;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #8c1220 0%, #6d0d18 55%, #4d0810 100%);
+    color: #fff;
+    box-shadow: 0 3px 14px rgba(77, 8, 16, .35);
+    z-index: 3;
+  }
+  .merek { display: flex; align-items: center; gap: 11px; margin-right: auto; min-width: 0; }
+  .logo {
+    width: 38px; height: 38px; flex: 0 0 auto;
+    border-radius: 11px;
+    background: rgba(255,255,255,.14);
+    border: 1px solid rgba(255,255,255,.28);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo svg { width: 22px; height: 22px; fill: #ffd9a8; }
+  .judul { line-height: 1.2; min-width: 0; }
+  .judul .besar { font-size: 15.5px; font-weight: 700; letter-spacing: .2px; white-space: nowrap; }
+  .judul .kecil { font-size: 11.5px; opacity: .82; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aksi { display: flex; flex-wrap: wrap; gap: 8px; }
+  button {
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 9px 13px; border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.12); color: #fff;
+    cursor: pointer; white-space: nowrap;
+    transition: background .15s ease, transform .05s ease;
+  }
+  button:hover { background: rgba(255,255,255,.24); }
+  button:active { transform: translateY(1px); }
+  button.utama { background: #ffb03a; border-color: #ffb03a; color: #4d0810; }
+  button.utama:hover { background: #ffc063; }
+
+  main.panggung { flex: 1 1 auto; position: relative; min-height: 0; background: #fff; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; background: #fff; }
+
+  .memuat {
+    position: absolute; inset: 0; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+    background: #f7f3ef; color: #6d0d18;
+    transition: opacity .35s ease;
+  }
+  .memuat.sembunyi { opacity: 0; pointer-events: none; }
+  .putar {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 4px solid #ecd9d2; border-top-color: #8c1220;
+    animation: putar 0.9s linear infinite;
+  }
+  @keyframes putar { to { transform: rotate(360deg); } }
+  .memuat .teks { font-size: 14px; font-weight: 600; }
+  .memuat .sub { font-size: 12px; color: #8a7a72; margin-top: -8px; text-align: center; padding: 0 24px; }
+
+  footer.kaki {
+    flex: 0 0 auto;
+    padding: 6px 16px;
+    font-size: 11.5px; color: #8a7a72; background: #efe9e4;
+    border-top: 1px solid #e2d8d0;
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: space-between;
+  }
+  @media (max-width: 560px) {
+    header.bilah { padding: 10px 12px; }
+    .merek { width: 100%; }
+    .aksi { width: 100%; }
+    .aksi button { flex: 1 1 auto; text-align: center; }
+    footer.kaki { justify-content: center; text-align: center; }
+  }
+</style>
+</head>
+<body>
+  <header class="bilah">
+    <div class="merek">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.9V15h2V9L12 3zm-5.2 8.7V16c0 1.7 2.3 3 5.2 3s5.2-1.3 5.2-3v-4.3l-5.2 2.8-5.2-2.8z"/></svg>
+      </div>
+      <div class="judul">
+        <div class="besar">Portal NF</div>
+        <div class="kecil">SIP Bimbel Nurul Fikri — sip.bimbelnurulfikri.id</div>
+      </div>
+    </div>
+    <div class="aksi">
+      <button id="btnUlang" title="Muat ulang halaman di dalam bingkai">↻ Muat Ulang</button>
+      <button id="btnPenuh" title="Tampilkan layar penuh">⛶ Layar Penuh</button>
+      <button class="utama" id="btnTab" title="Buka SIP NF satu halaman penuh — jalur login yang pasti tuntas">Masuk Halaman Penuh ↗</button>
+    </div>
+  </header>
+
+  <main class="panggung">
+    <div class="memuat" id="lapisMemuat">
+      <div class="putar" aria-hidden="true"></div>
+      <div class="teks">Memuat SIP Nurul Fikri…</div>
+      <div class="sub">Formulir login NF tampil di dalam bingkai di bawah ini. Kalau setelah menekan tombol masuk kamu mental kembali ke halaman login, itu pengaman cookie NF — pakai tombol emas "Masuk Halaman Penuh" di atas, loginnya tuntas di sana.</div>
+    </div>
+    <iframe id="kerangka" src="https://sip.bimbelnurulfikri.id/login" title="SIP Bimbel Nurul Fikri" allow="clipboard-write; fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </main>
+
+  <footer class="kaki">
+    <span>Login terjadi langsung di situs resmi NF — halaman ini tidak menyimpan akunmu.</span>
+    <span>Portal NF untuk Farhan — dibuat oleh Muse.</span>
+  </footer>
+
+  <script>
+    var URL_SIP = "https://sip.bimbelnurulfikri.id/login";
+    var bingkai = document.getElementById("kerangka");
+    var lapis = document.getElementById("lapisMemuat");
+
+    bingkai.addEventListener("load", function () {
+      lapis.classList.add("sembunyi");
+    });
+    setTimeout(function () { lapis.classList.add("sembunyi"); }, 6000);
+
+    document.getElementById("btnTab").addEventListener("click", function () {
+      window.open(URL_SIP, "_blank", "noopener");
+    });
+    document.getElementById("btnUlang").addEventListener("click", function () {
+      lapis.classList.remove("sembunyi");
+      bingkai.src = URL_SIP;
+      setTimeout(function () { lapis.classList.add("sembunyi"); }, 6000);
+    });
+    document.getElementById("btnPenuh").addEventListener("click", function () {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
