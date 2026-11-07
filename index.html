@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portal NF — SIP Bimbel Nurul Fikri</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#6d0d18">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Portal NF">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -96,6 +104,7 @@
     </div>
     <div class="aksi">
       <button id="btnUlang" title="Muat ulang halaman di dalam bingkai">↻ Muat Ulang</button>
+      <button id="btnPasang" title="Pasang Portal NF sebagai aplikasi di layar utama" hidden>📲 Pasang App</button>
       <button id="btnPenuh" title="Tampilkan layar penuh">⛶ Layar Penuh</button>
       <button class="utama" id="btnTab" title="Buka SIP NF satu halaman penuh — jalur login yang pasti tuntas">Masuk Halaman Penuh ↗</button>
     </div>
@@ -140,6 +149,41 @@
         document.documentElement.requestFullscreen();
       }
     });
+
+    // --- Mode aplikasi (PWA): tombol pasang + service worker ---
+    var btnPasang = document.getElementById("btnPasang");
+    var promptPasang = null;
+    var sudahApp = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      promptPasang = e;
+      if (!sudahApp) btnPasang.hidden = false;
+    });
+    window.addEventListener("appinstalled", function () {
+      btnPasang.hidden = true;
+      promptPasang = null;
+    });
+
+    var agenApple = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+    if (agenApple && !sudahApp) btnPasang.hidden = false;
+
+    btnPasang.addEventListener("click", function () {
+      if (promptPasang) {
+        promptPasang.prompt();
+        promptPasang.userChoice.then(function () { promptPasang = null; btnPasang.hidden = true; });
+      } else if (agenApple) {
+        alert("Cara pasang di iPhone: ketuk tombol Bagikan, lalu pilih \"Tambahkan ke Layar Utama\".");
+      } else {
+        alert("Cara pasang: buka menu browser (⋮), lalu pilih \"Instal aplikasi\" atau \"Tambahkan ke Layar Utama\".");
+      }
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () { /* portal tetap jalan tanpa SW */ });
+      });
+    }
   </script>
 </body>
 </html>
